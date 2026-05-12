@@ -81,9 +81,9 @@ app.use((err, req, res, next) => {
 // ==========================
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`=================================`);
   console.log(`Server running on port ${PORT}`);
-  console.log(`https://naveen.hummingtone.com`);
+  console.log(`http://10.150.20.137:${PORT}`);
   console.log(`=================================`);
 });

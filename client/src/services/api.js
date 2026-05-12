@@ -1,7 +1,7 @@
 // API service for all HTTP requests
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://naveen.hummingtone.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://10.150.20.137:5000/api';
 
 // Create axios instance
 const apiClient = axios.create({
