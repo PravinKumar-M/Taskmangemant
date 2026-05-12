@@ -84,6 +84,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`=================================`);
   console.log(`Server running on port ${PORT}`);
-  console.log(`http://10.150.20.137:${PORT}`);
+  console.log(`http://naveen.hummingtone.com:${PORT}`);
   console.log(`=================================`);
 });
