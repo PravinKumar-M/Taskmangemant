@@ -1,0 +1,121 @@
+/* SubmissionCard component styles */
+.submission-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.submission-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.submission-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.submission-title {
+  font-size: 18px;
+  color: #2c3e50;
+  margin: 0 0 5px 0;
+}
+
+.student-info {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+.marks-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.submission-content {
+  margin-bottom: 20px;
+}
+
+.submission-answer,
+.submission-feedback {
+  margin-bottom: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-left: 4px solid #667eea;
+  border-radius: 4px;
+}
+
+.submission-answer strong,
+.submission-feedback strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.submission-answer p,
+.submission-feedback p {
+  color: #555;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+.submission-feedback {
+  border-left-color: #28a745;
+}
+
+.marks-info {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.feedback-info {
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.grade-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.grade-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+@media (max-width: 768px) {
+  .submission-header {
+    flex-direction: column;
+  }
+
+  .marks-badge {
+    width: 100%;
+    text-align: center;
+  }
+
+  .submission-answer,
+  .submission-feedback {
+    padding: 12px;
+  }
+}
