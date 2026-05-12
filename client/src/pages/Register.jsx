@@ -1,6 +1,7 @@
-// Register page - User account creation
+// Register page - User account creation with Google Sign-In
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { authAPI } from '../services/api';
 import '../styles/Auth.css';
 
@@ -49,6 +50,35 @@ export default function Register() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await authAPI.googleLogin({
+        credential: credentialResponse.credential
+      });
+      const { token, user } = response.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      if (user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/student-dashboard');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google sign-up failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google Sign-In was cancelled or failed. Please try again.');
   };
 
   return (
@@ -113,6 +143,24 @@ export default function Register() {
             {loading ? 'Creating Account...' : 'Register'}
           </button>
         </form>
+
+        {/* DIVIDER */}
+        <div className="auth-divider">
+          <span>OR</span>
+        </div>
+
+        {/* GOOGLE SIGN-UP */}
+        <div className="google-btn-wrapper">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            theme="outline"
+            size="large"
+            width={370}
+            text="signup_with"
+            shape="rectangular"
+          />
+        </div>
 
         <p className="auth-link">
           Already have an account? <Link to="/login">Login here</Link>

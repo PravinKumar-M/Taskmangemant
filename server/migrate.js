@@ -1,0 +1,22 @@
+// Quick migration script - Run once to add google_id column
+require('dotenv').config();
+const pool = require('./models/db');
+
+async function migrate() {
+  try {
+    console.log('Running migration: Adding google_id column...');
+    await pool.query(
+      "ALTER TABLE users ADD COLUMN google_id VARCHAR(255) DEFAULT NULL AFTER role"
+    );
+    console.log('✅ Migration successful! google_id column added.');
+  } catch (err) {
+    if (err.code === 'ER_DUP_FIELDNAME') {
+      console.log('✅ Column google_id already exists. No changes needed.');
+    } else {
+      console.error('❌ Migration failed:', err.message);
+    }
+  }
+  process.exit(0);
+}
+
+migrate();

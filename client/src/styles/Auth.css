@@ -147,6 +147,44 @@
   color: #555;
 }
 
+/* ======================== */
+/* Google Sign-In Styles    */
+/* ======================== */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  gap: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d0d0d0, transparent);
+}
+
+.auth-divider span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.google-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.google-btn-wrapper > div {
+  width: 100% !important;
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 768px) {
   .auth-card {
     padding: 30px 20px;
@@ -160,3 +198,4 @@
     font-size: 18px;
   }
 }
+

@@ -36,7 +36,8 @@ apiClient.interceptors.response.use(
 // Auth APIs
 export const authAPI = {
   register: (data) => apiClient.post('/auth/register', data),
-  login: (data) => apiClient.post('/auth/login', data)
+  login: (data) => apiClient.post('/auth/login', data),
+  googleLogin: (data) => apiClient.post('/auth/google', data)
 };
 
 // Task APIs
