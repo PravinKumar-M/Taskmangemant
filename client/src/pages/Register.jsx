@@ -1,7 +1,8 @@
 // Register page - User account creation with Google Sign-In
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 import { authAPI } from '../services/api';
 import '../styles/Auth.css';
 
@@ -52,16 +53,26 @@ export default function Register() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
+  const handleFirebaseGoogleSignUp = async () => {
     setError('');
     setLoading(true);
 
     try {
+      // 1. Trigger Firebase Google Popup
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      // 2. Get the Google ID Token from the OAuth credential
+      const authCredential = GoogleAuthProvider.credentialFromResult(result);
+      const credential = authCredential.idToken;
+
+      // 3. Send token to backend
       const response = await authAPI.googleLogin({
-        credential: credentialResponse.credential
+        credential: credential
       });
+
       const { token, user } = response.data;
 
+      // 4. Store in local storage and redirect
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
@@ -71,14 +82,11 @@ export default function Register() {
         navigate('/student-dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Google sign-up failed');
+      console.error('Firebase Google SignUp Error:', err);
+      setError(err.response?.data?.message || 'Google Sign-Up failed or was cancelled. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleError = () => {
-    setError('Google Sign-In was cancelled or failed. Please try again.');
   };
 
   return (
@@ -150,17 +158,18 @@ export default function Register() {
         </div>
 
         {/* GOOGLE SIGN-UP */}
-        <div className="google-btn-wrapper">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            theme="outline"
-            size="large"
-            width={370}
-            text="signup_with"
-            shape="rectangular"
+        <button 
+          className="firebase-google-btn" 
+          onClick={handleFirebaseGoogleSignUp}
+          disabled={loading}
+          type="button"
+        >
+          <img 
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+            alt="Google Logo" 
           />
-        </div>
+          Sign up with Google
+        </button>
 
         <p className="auth-link">
           Already have an account? <Link to="/login">Login here</Link>

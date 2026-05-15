@@ -1,10 +1,9 @@
-// Login.jsx - With Google Sign-In
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 import { authAPI } from '../services/api';
 import '../styles/Auth.css';
-
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,16 +36,26 @@ export default function Login() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
+  const handleFirebaseGoogleLogin = async () => {
     setError('');
     setLoading(true);
 
     try {
+      // 1. Trigger Firebase Google Popup
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      // 2. Get the Google ID Token from the OAuth credential
+      const authCredential = GoogleAuthProvider.credentialFromResult(result);
+      const credential = authCredential.idToken;
+
+      // 3. Send token to backend
       const response = await authAPI.googleLogin({
-        credential: credentialResponse.credential
+        credential: credential
       });
+
       const { token, user } = response.data;
 
+      // 4. Store in local storage and redirect
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
@@ -56,14 +65,11 @@ export default function Login() {
         navigate('/student-dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Google login failed');
+      console.error('Firebase Google Login Error:', err);
+      setError(err.response?.data?.message || 'Google Sign-In failed or was cancelled. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleError = () => {
-    setError('Google Sign-In was cancelled or failed. Please try again.');
   };
 
   return (
@@ -116,17 +122,18 @@ export default function Login() {
         </div>
 
         {/* GOOGLE SIGN-IN */}
-        <div className="google-btn-wrapper">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            theme="outline"
-            size="large"
-            width={370}
-            text="signin_with"
-            shape="rectangular"
+        <button 
+          className="firebase-google-btn" 
+          onClick={handleFirebaseGoogleLogin}
+          disabled={loading}
+          type="button"
+        >
+          <img 
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+            alt="Google Logo" 
           />
-        </div>
+          Continue with Google
+        </button>
 
         <p className="auth-link">
           Don't have an account? <Link to="/register">Register</Link>

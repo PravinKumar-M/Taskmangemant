@@ -1,7 +1,7 @@
 // API service for all HTTP requests
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://naveen.hummingtone.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Create axios instance
 const apiClient = axios.create({
@@ -54,6 +54,12 @@ export const submissionAPI = {
   getAllSubmissions: () => apiClient.get('/submissions/admin/all'),
   getStudentSubmissions: () => apiClient.get('/submissions/my/submissions'),
   updateSubmission: (id, data) => apiClient.put(`/submissions/${id}`, data)
+};
+
+// Feedback APIs
+export const feedbackAPI = {
+  submitFeedback: (data) => apiClient.post('/feedbacks', data),
+  getAllFeedbacks: () => apiClient.get('/feedbacks/admin/all')
 };
 
 export default apiClient;

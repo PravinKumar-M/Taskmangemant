@@ -33,7 +33,7 @@ const getAllTasks = async (req, res) => {
 // Create task (admin only)
 const createTask = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, type = 'general', options = null, correct_answer = null } = req.body;
 
     // Validation
     if (!title || !description) {
@@ -43,12 +43,27 @@ const createTask = async (req, res) => {
       });
     }
 
+    // Validate type and options
+    if (type === 'mcq' && (!options || !Array.isArray(options))) {
+      return res.status(400).json({
+        success: false,
+        message: 'MCQ tasks require an options array'
+      });
+    }
+
+    let optionsStr = null;
+    let correctAnswerStr = correct_answer;
+    if (type === 'mcq' && options) {
+      optionsStr = typeof options === 'string' ? options : JSON.stringify(options);
+      correctAnswerStr = typeof correct_answer === 'string' ? correct_answer : JSON.stringify(correct_answer);
+    }
+
     const connection = await pool.getConnection();
 
     try {
       const [result] = await connection.query(
-        'INSERT INTO tasks (title, description) VALUES (?, ?)',
-        [title, description]
+        'INSERT INTO tasks (title, description, type, options, correct_answer) VALUES (?, ?, ?, ?, ?)',
+        [title, description, type, optionsStr, correctAnswerStr]
       );
 
       connection.release();

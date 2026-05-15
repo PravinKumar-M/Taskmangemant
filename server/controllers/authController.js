@@ -147,12 +147,12 @@ const googleLogin = async (req, res) => {
       });
     }
 
-    // Verify Google token
+    // Verify Google ID Token
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID
     });
-
+    
     const payload = ticket.getPayload();
     const { sub: googleId, email, name, picture } = payload;
 
@@ -175,26 +175,29 @@ const googleLogin = async (req, res) => {
       let user;
 
       if (existingUsers.length > 0) {
-        // User exists — update google_id if not set
+        // User exists — update google_id and profile_picture if needed
         user = existingUsers[0];
-        if (!user.google_id) {
+        if (!user.google_id || user.profile_picture !== picture) {
           await connection.query(
-            'UPDATE users SET google_id = ? WHERE id = ?',
-            [googleId, user.id]
+            'UPDATE users SET google_id = ?, profile_picture = ? WHERE id = ?',
+            [googleId || null, picture || null, user.id]
           );
+          user.profile_picture = picture || null;
         }
       } else {
         // New user — create account with Google info
         const randomPassword = await bcrypt.hash(googleId + Date.now(), 10);
+        const userName = name || email.split('@')[0];
         const [result] = await connection.query(
-          'INSERT INTO users (name, email, password, role, google_id) VALUES (?, ?, ?, ?, ?)',
-          [name, email, randomPassword, 'student', googleId]
+          'INSERT INTO users (name, email, password, role, google_id, profile_picture) VALUES (?, ?, ?, ?, ?, ?)',
+          [userName, email, randomPassword, 'student', googleId || null, picture || null]
         );
         user = {
           id: result.insertId,
-          name,
+          name: userName,
           email,
-          role: 'student'
+          role: 'student',
+          profile_picture: picture
         };
       }
 
@@ -202,7 +205,7 @@ const googleLogin = async (req, res) => {
 
       // Generate JWT token
       const token = jwt.sign(
-        { id: user.id, email: user.email, role: user.role, name: user.name },
+        { id: user.id, email: user.email, role: user.role, name: user.name, profilePicture: user.profile_picture },
         process.env.JWT_SECRET || 'your_jwt_secret_key',
         { expiresIn: '7d' }
       );
@@ -215,7 +218,8 @@ const googleLogin = async (req, res) => {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
+          profilePicture: user.profile_picture
         }
       });
     } catch (dbError) {
@@ -224,9 +228,15 @@ const googleLogin = async (req, res) => {
     }
   } catch (error) {
     console.error('Google login error:', error);
+    try {
+      require('fs').appendFileSync('error.log', new Date().toISOString() + ' - ' + error.message + '\n' + error.stack + '\n\n');
+    } catch (e) {}
+    
     return res.status(500).json({
       success: false,
-      message: 'Google authentication failed'
+      message: 'Google authentication failed',
+      error: error.message,
+      stack: error.stack
     });
   }
 };

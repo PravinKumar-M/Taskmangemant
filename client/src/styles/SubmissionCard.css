@@ -1,15 +1,15 @@
 /* SubmissionCard component styles */
 .submission-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
   transition: all 0.3s ease;
   margin-bottom: 20px;
 }
 
 .submission-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px var(--shadow-color);
 }
 
 .submission-header {
@@ -22,18 +22,18 @@
 
 .submission-title {
   font-size: 18px;
-  color: #2c3e50;
+  color: var(--title-color);
   margin: 0 0 5px 0;
 }
 
 .student-info {
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .marks-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   color: white;
   padding: 8px 16px;
   border-radius: 4px;
@@ -50,7 +50,7 @@
 .submission-feedback {
   margin-bottom: 15px;
   padding: 15px;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-left: 4px solid #667eea;
   border-radius: 4px;
 }
@@ -59,12 +59,12 @@
 .submission-feedback strong {
   display: block;
   margin-bottom: 8px;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .submission-answer p,
 .submission-feedback p {
-  color: #555;
+  color: var(--text-secondary);
   white-space: pre-wrap;
   word-wrap: break-word;
   margin: 0;
@@ -90,7 +90,7 @@
 }
 
 .grade-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   color: white;
   padding: 10px 20px;
   border-radius: 4px;
@@ -101,7 +101,7 @@
 
 .grade-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 @media (max-width: 768px) {

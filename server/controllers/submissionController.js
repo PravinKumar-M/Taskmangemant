@@ -32,6 +32,47 @@ const submitTask = async (req, res) => {
         });
       }
 
+      const task = tasks[0];
+      let marks = null;
+      let feedback = null;
+
+      // Auto-grade MCQ
+      if (task.type === 'mcq') {
+        try {
+          const correctAnswers = typeof task.correct_answer === 'string' ? JSON.parse(task.correct_answer) : task.correct_answer;
+          const studentAnswers = typeof answer === 'string' ? JSON.parse(answer) : answer;
+          
+          if (Array.isArray(correctAnswers) && Array.isArray(studentAnswers)) {
+            let correctCount = 0;
+            for (let i = 0; i < correctAnswers.length; i++) {
+              if (studentAnswers[i] === correctAnswers[i]) {
+                correctCount++;
+              }
+            }
+            marks = Math.round((correctCount / correctAnswers.length) * 100);
+            feedback = `You got ${correctCount} out of ${correctAnswers.length} correct. (Auto-graded)`;
+          } else {
+            // Fallback for old single MCQ format
+            if (answer === task.correct_answer) {
+              marks = 100;
+              feedback = 'Correct answer! (Auto-graded)';
+            } else {
+              marks = 0;
+              feedback = `Incorrect answer. The correct answer was: ${task.correct_answer} (Auto-graded)`;
+            }
+          }
+        } catch (e) {
+          // Fallback if JSON parse fails
+          if (answer === task.correct_answer) {
+            marks = 100;
+            feedback = 'Correct answer! (Auto-graded)';
+          } else {
+            marks = 0;
+            feedback = `Incorrect answer. The correct answer was: ${task.correct_answer} (Auto-graded)`;
+          }
+        }
+      }
+
       // Check if submission already exists
       const [existingSubmissions] = await connection.query(
         'SELECT * FROM submissions WHERE task_id = ? AND student_id = ?',
@@ -42,15 +83,15 @@ const submitTask = async (req, res) => {
       if (existingSubmissions.length > 0) {
         // Update existing submission
         const [updateResult] = await connection.query(
-          'UPDATE submissions SET answer = ?, submitted_at = NOW() WHERE task_id = ? AND student_id = ?',
-          [answer, task_id, student_id]
+          'UPDATE submissions SET answer = ?, marks = ?, feedback = ?, submitted_at = NOW() WHERE task_id = ? AND student_id = ?',
+          [answer, marks, feedback, task_id, student_id]
         );
         result = updateResult;
       } else {
         // Create new submission
         const [insertResult] = await connection.query(
-          'INSERT INTO submissions (task_id, student_id, answer) VALUES (?, ?, ?)',
-          [task_id, student_id, answer]
+          'INSERT INTO submissions (task_id, student_id, answer, marks, feedback) VALUES (?, ?, ?, ?, ?)',
+          [task_id, student_id, answer, marks, feedback]
         );
         result = insertResult;
       }
@@ -69,7 +110,8 @@ const submitTask = async (req, res) => {
     console.error('Submit task error:', error);
     return res.status(500).json({
       success: false,
-      message: 'Server error while submitting task'
+      message: 'Server error while submitting task',
+      error: error.message
     });
   }
 };
@@ -150,10 +192,10 @@ const updateSubmission = async (req, res) => {
     const { marks, feedback } = req.body;
 
     // Validation
-    if (marks === undefined || !feedback) {
+    if (marks === undefined) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide marks and feedback'
+        message: 'Please provide marks'
       });
     }
 

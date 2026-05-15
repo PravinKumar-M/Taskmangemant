@@ -12,12 +12,12 @@
 
 .dashboard-header h2 {
   font-size: 28px;
-  color: white;
+  color: var(--title-color);
   margin: 0 0 10px 0;
 }
 
 .dashboard-header p {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-secondary);
   margin: 0;
   font-size: 16px;
 }
@@ -28,15 +28,15 @@
   gap: 10px;
   margin-bottom: 30px;
   flex-wrap: wrap;
-  background: white;
+  background: var(--card-bg);
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .tab-btn {
-  background: #f0f0f0;
-  color: #666;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   padding: 10px 20px;
   border: 2px solid transparent;
   border-radius: 6px;
@@ -47,13 +47,14 @@
 }
 
 .tab-btn:hover {
-  background: #e0e0e0;
+  background: var(--border-color);
 }
 
 .tab-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-color: white;
+  background: var(--bg-primary);
+  color: var(--tab-active-text);
+  border-color: var(--accent-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 /* Tasks Grid */
@@ -77,10 +78,10 @@
 }
 
 .submission-item {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
   margin-bottom: 15px;
   animation: slideUp 0.3s ease;
 }
@@ -92,7 +93,7 @@
 }
 
 .submission-answer {
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   padding: 15px;
   border-left: 4px solid #667eea;
   border-radius: 4px;
@@ -160,18 +161,18 @@
 .no-data {
   text-align: center;
   padding: 40px 20px;
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 16px;
 }
 
 /* Create Task Section */
 .create-task-section {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .form-container {
@@ -203,9 +204,12 @@
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   padding: 12px 15px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-primary);
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
@@ -244,7 +248,7 @@
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   color: white;
   padding: 10px 20px;
   border-radius: 4px;
@@ -255,12 +259,12 @@
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 /* Submission Details */
 .submission-details {
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   padding: 15px;
   border-radius: 6px;
   margin-bottom: 20px;
@@ -268,16 +272,17 @@
 
 .submission-details p {
   margin: 8px 0;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .submission-details strong {
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .answer-text {
-  background: white;
+  background: var(--input-bg);
+  color: var(--text-primary);
   padding: 10px;
   border-radius: 4px;
   margin-top: 8px;
@@ -288,10 +293,10 @@
 
 /* Task Summary */
 .task-summary {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .task-summary h4 {
